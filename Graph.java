@@ -10,6 +10,15 @@ public class Graph {
 		this.edges = edges;
 	}
 	
+	public void addEdge(char x, char y){
+		edges[chartoint(x)][chartoint(y)] = true;
+	}
+	
+	public void addEdge(char x, char y, boolean bothWays){
+		addEdge(x,y);
+		if (bothWays) addEdge(y,x); 
+	}
+	
 	public static int chartoint (char c){
 		return (int) c - 65;
 	}

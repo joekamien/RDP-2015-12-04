@@ -4,7 +4,6 @@ import java.util.Scanner;
 public class Main {
 
 	public static void main(String[] args) {
-		boolean[][] edges; 
 		
 		Scanner scanner = new Scanner(System.in);
 		
@@ -12,7 +11,7 @@ public class Main {
 		int width = scanner.nextInt();
 		int start = Graph.chartoint(scanner.next().charAt(0));
 		
-		edges = new boolean[width * height][width * height];
+		Graph g = new Graph(width * height);
 		
 		height = height * 2 - 1;
 		width = width * 2 - 1;
@@ -26,38 +25,47 @@ public class Main {
 		
 		scanner.close();
 		
+		//have the input as an array of strings
+		boolean inbetween = false;
 		for(int i = 0; i < input.length; i++){
-			System.out.println(input[i]);
+			String line = input[i];
+
+			for(int j = inbetween ? 0 : 2; j < line.length(); j+= 4){
+				
+				char currentEdge = line.charAt(j);
+				
+				if(!inbetween){
+					//there will only be left/right connections
+					char left = line.charAt(j - 2);
+					char right = line.charAt(j + 2);
+					if(currentEdge == '-'){
+						g.addEdge(left, right, true);
+					} else if (currentEdge == '>'){
+						g.addEdge(left, right);
+					} else if (currentEdge == '<'){
+						g.addEdge(right, left);
+					}
+				} else{
+					//there will only be top to bottom connections
+					char top = input[i-1].charAt(j);
+					char bottom = input[i+1].charAt(j);
+					if(currentEdge == '|'){
+						g.addEdge(top, bottom, true);
+					} else if (currentEdge == 'v'){
+						g.addEdge(top, bottom);
+					} else if (currentEdge == '^'){
+						g.addEdge(bottom, top);
+					}
+				}
+				
+			}
+			
+			inbetween = !inbetween;
 		}
 		
-		/*
-		edges = new boolean[9][9];
 		
-		edges[0][1] = true;
-		edges[1][0] = true;
-		edges[1][2] = true;
-		edges[2][1] = true;
-		edges[0][3] = true;
-		edges[3][0] = true;
-		edges[1][4] = true;
-		edges[4][1] = true;
-		edges[2][5] = true;
-		edges[3][4] = true;
-		edges[4][5] = true;
-		edges[5][4] = true;
-		edges[6][3] = true;
-		edges[4][7] = true;
-		edges[5][8] = true;
-		edges[6][7] = true;
-		edges[7][6] = true;
-		edges[8][7] = true;
-		
-		*/
-		
-		/*
 		//here is where actual code starts (after input)
-		Graph g = new Graph(edges);
-		Solution s = new Solution(g, 5);
+		Solution s = new Solution(g, start);
 		
 		ArrayList<Solution> solutions = new ArrayList<Solution>();
 		solutions = s.generateSubsolutions();
@@ -69,8 +77,6 @@ public class Main {
 			}
 			solutions = newSolutions;
 		}
-		
-		*/
 		
 	}
 	
